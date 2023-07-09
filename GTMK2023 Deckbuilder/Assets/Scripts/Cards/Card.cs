@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    [SerializeField] private CardStrategy _cardStrat;
     private Vector2 _goalPos; // the position this object is currently trying to move to
     private Transform t;
 
@@ -18,18 +17,18 @@ public class Card : MonoBehaviour
     void Update()
     {
         // for now, just teleport to the current goal position instead of gradually moving
-        t.position = _goalPos;
-	}
-
-    // perform this card's effect
-    public void Play(BattleBoard board, int currentRow)
-	{
-        _cardStrat.Execute(board, currentRow);
+        transform.position = _goalPos;
 	}
 
     // set this card's new goal position
-    public void SetNewPos(Vector2 newPos)
+    public void SetNewPos(Vector3 newPos)
 	{
         _goalPos = newPos;
 	}
+
+    // perform this card's effect
+    public virtual void Play(BattleBoard board, int currentRow)
+    {
+        print("This card has been played!");
+    }
 }

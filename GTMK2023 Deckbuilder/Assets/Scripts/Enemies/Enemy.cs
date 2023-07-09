@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class Enemy : BattleEntity
 {
+	[SerializeField] private TextMesh _turnsLabel;
     [SerializeField] private int _waitTurns;
     private int _turnsLeft;
     [SerializeField] private EnemyStrategy _enemyStrat;
 
-	private void Start()
+	new private void Awake()
 	{
+		base.Awake();
 		_turnsLeft = _waitTurns;
+		UpdateTurnsLabel();
+	}
+
+	private void UpdateTurnsLabel()
+	{
+		_turnsLabel.text = "(" + _turnsLeft + ")";
 	}
 
 	// count down; if countdown over, take effect
@@ -22,5 +30,6 @@ public class Enemy : BattleEntity
 			_turnsLeft = _waitTurns;
 			_enemyStrat.Execute(board);
 		}
+		UpdateTurnsLabel();
 	}
 }

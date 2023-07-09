@@ -5,9 +5,9 @@ using UnityEngine;
 public class MovingEntity : MonoBehaviour
 {
     // variables for movement
-    private float maxMoveSpeed = 15f; // units per second
+    private float maxMoveSpeed = 30f; // units per second
     private float minMoveSpeed = 1.5f; // units per second
-    private float distToSpeed = 1.5f; // how far enough away to trigger max speed?
+    private float distToSpeed = 5f; // how far enough away to trigger max speed?
     private Vector3 _goalPos; // the position this object is currently trying to move to
 
     // Start is called before the first frame update

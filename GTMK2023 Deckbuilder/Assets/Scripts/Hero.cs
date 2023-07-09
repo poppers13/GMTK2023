@@ -5,6 +5,7 @@ using UnityEngine;
 public class Hero : BattleEntity
 {
     [SerializeField] private Deck _deck;
+    [SerializeField] private TextMesh _defenceLabel; // shows current defence
     [SerializeField] private int _defence; // how much defence the hero currently has
 
     // -- PROPERTIES --
@@ -13,16 +14,15 @@ public class Hero : BattleEntity
         get { return _deck; }
 	}
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	// -- METHODS --
+	public void Start()
+	{
+        SetNewPos(transform.position); // not sure why i need to do this, but whatever man fuck it
+	}
 
-    // Update is called once per frame
-    void Update()
+    private void UpdateDefenceLabel()
     {
-        
+        _defenceLabel.text = "(+" + _defence.ToString() + ")";
     }
 
     public override void TakeDamage(int damage)
@@ -34,12 +34,13 @@ public class Hero : BattleEntity
             base.TakeDamage(Mathf.Abs(_defence)); // take the remainder as damage
             _defence = 0;
 		}
+        UpdateDefenceLabel();
 
         // show how much defence was lost, if any
         var defenceLost = _defence - oldDefence;
         if (defenceLost > 0)
 		{
-            _textManager.NewCustomLabel("Defence " + (_defence - oldDefence).ToString(), _textManager.defaultSkin, 1, new Vector2(100, 40), (Vector2)this.transform.position, new Vector2(0, 3)); // create a label for defended damage
+            //_textManager.NewCustomLabel("Defence " + (_defence - oldDefence).ToString(), _textManager.defaultSkin, 1, new Vector2(100, 40), (Vector2)this.transform.position, new Vector2(0, 3)); // create a label for defended damage
         }
     }
 
@@ -47,7 +48,8 @@ public class Hero : BattleEntity
     public void GainDefence(int defenceGiven)
 	{
         _defence += defenceGiven;
-        _textManager.NewCustomLabel("Defence +" + defenceGiven.ToString(), _textManager.defaultSkin, 1, new Vector2(100, 40), (Vector2)this.transform.position, new Vector2(0, 3));
+        UpdateDefenceLabel();
+        //_textManager.NewCustomLabel("Defence +" + defenceGiven.ToString(), _textManager.defaultSkin, 1, new Vector2(100, 40), (Vector2)this.transform.position, new Vector2(0, 3));
     }
 
     public void ResetDefence()

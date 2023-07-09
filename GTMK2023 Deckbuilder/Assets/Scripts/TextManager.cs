@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class TextManager : MonoBehaviour
 {
+	[SerializeField] private Camera _cam;
+	[SerializeField] private Canvas _canvas;
     private List<Label> _labels = new List<Label>();
 	public GUISkin defaultSkin;
 
@@ -11,8 +14,7 @@ public class TextManager : MonoBehaviour
 	// import styles
 	private void Start()
 	{
-		defaultSkin = (GUISkin)UnityEditor.AssetDatabase.LoadMainAssetAtPath("Assets/Styles/Default.GUISkin");
-		GUI.skin = defaultSkin;
+		//defaultSkin = (GUISkin)AssetDatabase.LoadMainAssetAtPath("Assets/Styles/Default.GUISkin");
 	}
 
 	// update label position and lifetime
@@ -38,17 +40,21 @@ public class TextManager : MonoBehaviour
 	}
 
 	// draw all labels
-	private void OnGUI()
-	{
-		foreach (Label lbl in _labels)
-		{
-			GUI.Label(new Rect(lbl.Position, lbl.Size), lbl.Text);
-		}
-	}
+	//private void OnGUI()
+	//{
+	//	GUI.skin = defaultSkin;
+
+	//	foreach (Label lbl in _labels)
+	//	{
+	//		GUI.Label(new Rect(lbl.Position, lbl.Size), lbl.Text);
+	//	}
+	//}
 
 	// create new custom label
 	public void NewCustomLabel(string text, GUISkin skin, float lifetime, Vector2 size, Vector2 position, Vector2 velocity)
 	{
-		var lbl = new Label(text, skin, lifetime, size, position, velocity);
+		var screenPos = (Vector2)_cam.WorldToScreenPoint(position); // convert world space position to screen space position (since that's what GUI.Label uses)
+		print("Original: " + position.ToString() + " vs. " + screenPos.ToString());
+		var lbl = new Label(text, skin, lifetime, size, screenPos, velocity);
 	}
 }

@@ -6,8 +6,8 @@ using UnityEngine;
 public class Deck : MonoBehaviour
 {
     // store cards
-    [SerializeField] private List<Card> _drawPile;
-    private List<Card> _discardPile;
+    [SerializeField] private List<Card> _drawPile = new List<Card>();
+    private List<Card> _discardPile = new List<Card>();
     private int _cursorIndex = 0;
 
     [SerializeField] private InventoryManager _inv;
@@ -48,6 +48,14 @@ public class Deck : MonoBehaviour
             var startIndex = _cursorIndex;
             var indexes = new List<int>();
             var maxNum = Mathf.Min(_cardsToShow, _drawPile.Count);
+            if (maxNum == 0) // can't divide by zero, so just output an empty list
+			{
+                var emptyList = new List<int>();
+                emptyList.Add(0);
+                emptyList.Add(0);
+                emptyList.Add(0);
+                return emptyList;
+            }
 
             // create a list of the 3 indexes selected
             for (var i = 0; i < shuffleNum; i++)
@@ -202,15 +210,15 @@ public class Deck : MonoBehaviour
     // retrieve input for moving/shuffling cards
     void Update()
     {
-        // if draw pile is < hand size, re-shuffle
-        if (_drawPile.Count < 6)
-		{
-            ResetDeck();
-		}
-
-        // only allow for shuffling during the shuffling phase
+        // only allow for deck manipulation during the shuffling phase
         if (_board.State == GameState.SHUFFLING)
 		{
+            // if draw pile is < hand size, re-shuffle
+            if (_drawPile.Count < 6)
+            {
+                ResetDeck();
+            }
+
             // moving cursor
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
@@ -233,16 +241,22 @@ public class Deck : MonoBehaviour
                 Shuffle(_cursorIndex);
             }
 
-			// TEST: if press P, play the top card
-			if (Input.GetKeyDown(KeyCode.P))
+            // press E to end the turn immediately
+            if (Input.GetKeyDown(KeyCode.E))
 			{
-				PlayTopCard(new BattleBoard(), 0);
-
-				_cursorIndex--;
-				PlaceCursorInBounds();
-				print("New cursor index is " + _cursorIndex);
-				UpdateVisibility();
+                _board.ShuffleTime = 0;
 			}
+
+			//// TEST: if press P, play the top card
+			//if (Input.GetKeyDown(KeyCode.P))
+			//{
+			//	PlayTopCard(new BattleBoard(), 0);
+
+			//	_cursorIndex--;
+			//	PlaceCursorInBounds();
+			//	print("New cursor index is " + _cursorIndex);
+			//	UpdateVisibility();
+			//}
 		}
     }
 }

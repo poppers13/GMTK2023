@@ -49,6 +49,11 @@ public class BattleBoard : MonoBehaviour
 	{
         get { return _actionWaitTime; }
 	}
+    public float ShuffleTime
+	{
+        get { return _shuffleTime; }
+        set { _shuffleTime = value; }
+	}
 
 
     // -- METHODS --
@@ -147,6 +152,8 @@ public class BattleBoard : MonoBehaviour
         // once done, set back to shuffling and reset cursor
         _state = GameState.SHUFFLING;
         _hero.Deck.ResetCursor();
+        _hero.ResetDefence(); // set defence back to 0
+        _hero.Deck.UpdateVisibility(); // to re-highlight the selected cards
 	}
 
 	private void OnGUI()

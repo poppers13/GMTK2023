@@ -11,9 +11,11 @@ public class InventoryManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _currentCards.Add(0, 4); // add 4 test cards
-        _currentCards.Add(1, 4); // add 4 test card 1s
-        _currentCards.Add(2, 4); // add 4 test card 2s
+        // add 2 of every card to the deck
+        for (var i = 0; i < _allCards.Count; i++)
+		{
+            _currentCards.Add(i, 2); 
+        }
 
         var cardObjs = new List<Card>(); // to store all cards
 
@@ -23,7 +25,7 @@ public class InventoryManager : MonoBehaviour
             for (var i = 0; i < total; i++)
 			{
                 var c = Instantiate(_allCards[entry.Key]);
-                cardObjs.Add(c.GetComponent<Card>()); // add card to list
+				cardObjs.Add(c.GetComponent<Card>()); // add card to list
 			}
 		}
 

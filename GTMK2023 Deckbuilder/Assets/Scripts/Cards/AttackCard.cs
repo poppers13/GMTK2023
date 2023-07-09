@@ -8,6 +8,10 @@ public class AttackCard : Card
 
 	public override void Play(BattleBoard board, int currentRow)
 	{
-		board.Rows[currentRow][0].TakeDamage(_damageDealt);
+		var enemyList = board.Rows[currentRow];
+		if (enemyList.Count > 0)
+		{
+			enemyList[0].TakeDamage(_damageDealt);
+		}
 	}
 }

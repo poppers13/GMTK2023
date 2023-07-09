@@ -15,7 +15,7 @@ public class Deck : MonoBehaviour
     // values for the size of the deck window, and how many cards there are
     // both these values assume that the deck's origin is in the *bottom-right*
     [SerializeField] private float _width = 6;
-    [SerializeField] private float _height = 2;
+    [SerializeField] private float _height = 1.75f;
     [SerializeField] private int _cardsToShow = 8;
 
     // how many cards can be selected for shuffling at once

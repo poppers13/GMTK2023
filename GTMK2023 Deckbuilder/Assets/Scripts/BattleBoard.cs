@@ -24,6 +24,10 @@ public class BattleBoard : MonoBehaviour
     [SerializeField] private List<GameObject> _row4;
     [SerializeField] private List<GameObject> _row5;
 
+    // grid size properties (assumes transform is top-left of grid)
+    private float _gridWidth = 1.5f; // in units, how wide each enemy grid square is
+    private float _gridHeight = 1.2f; // in units, how tall each enemy grid square is
+
     private float _shuffleTimeMax = 20.0f; // how long the player can spend shuffling
     private float _shuffleTime;
 
@@ -76,6 +80,8 @@ public class BattleBoard : MonoBehaviour
                 _rows[rowNum].Add(newObj.GetComponent<Enemy>()); // add the enemy component to the list
             }
         }
+
+        MoveEnemies(); // move enemies to their proper positions
     }
 
     // Update is called once per frame
@@ -106,6 +112,24 @@ public class BattleBoard : MonoBehaviour
             case GameState.WAITFORENEMIES:
                 // again, nothing needs to be done, since a coroutine got run
                 break;
+		}
+	}
+
+    // move all enemies to their assigned positions in the board grid
+    public void MoveEnemies()
+	{
+        for (var r = 0; r < 5; r++)
+		{
+            var row = _rows[r];
+            for (var c = 0; c < row.Count; c++)
+			{
+                var enemy = row[c];
+
+                var newx = this.transform.position.x + (_gridWidth * c);
+                var newy = this.transform.position.y - (_gridHeight * r);
+
+                enemy.SetNewPos(new Vector3(newx, newy, 0));
+			}
 		}
 	}
 

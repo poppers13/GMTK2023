@@ -52,6 +52,12 @@ public class BattleBoard : MonoBehaviour
     // take all given prefabs and chuck their Enemy component references in the rows list
     void Start()
     {
+        // create five empty rows to place enemies into
+        for (var i = 0; i < 5; i++)
+		{
+            _rows.Add(new List<Enemy>());
+        }
+
         _shuffleTime = _shuffleTimeMax;
 
         var objRows = new List<List<GameObject>>();
@@ -61,15 +67,15 @@ public class BattleBoard : MonoBehaviour
         objRows.Add(_row4);
         objRows.Add(_row5);
 
-        var rowNum = 0;
-        foreach (List<GameObject> objRow in objRows)
+        for (var rowNum = 0; rowNum < 5; rowNum++)
 		{
-            foreach (GameObject o in objRow)
-			{
-                _rows[rowNum].Add(o.GetComponent<Enemy>()); // add the enemy component to the list
-			}
-            rowNum++;
-		}
+            foreach (GameObject o in objRows[rowNum])
+            {
+                print("Row " + rowNum + ": adding " + o.name);
+                var newObj = Instantiate(o); // create an instance of the prefab stored
+                _rows[rowNum].Add(newObj.GetComponent<Enemy>()); // add the enemy component to the list
+            }
+        }
     }
 
     // Update is called once per frame

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BattleEntity : MonoBehaviour
+public class BattleEntity : MovingEntity
 {
     [SerializeField] private int _health;
     [SerializeField] private int _healthMax;

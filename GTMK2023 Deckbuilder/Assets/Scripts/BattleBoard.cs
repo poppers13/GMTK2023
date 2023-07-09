@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-enum GameState
+public enum GameState
 {
     SHUFFLING,
     HEROTURN,
@@ -14,6 +14,7 @@ public class BattleBoard : MonoBehaviour
     private List<List<Enemy>> _rows = new List<List<Enemy>>();
     [SerializeField] private Hero _hero;
     [SerializeField] private GameState _state;
+    [SerializeField] private float _actionWaitTime = 1f; // how long to wait between actions on turns (should be global but whatevs)
 
     // DEFINED THIS WAY FOR INITIALIZATION SO IT'LL APPEAR IN THE INSPECTOR CUZ I CAN'T BE BOTHERED OTHERWISE
     [SerializeField] private List<GameObject> _row1;
@@ -31,6 +32,16 @@ public class BattleBoard : MonoBehaviour
 	{
         get { return _rows; }
 	}
+    public GameState State
+	{
+        get { return _state; }
+        set { _state = value; }
+	}
+    public float ActionWaitTime
+	{
+        get { return _actionWaitTime; }
+	}
+
 
     // -- METHODS --
 

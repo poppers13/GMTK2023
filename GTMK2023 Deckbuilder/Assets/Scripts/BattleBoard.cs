@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -15,7 +16,9 @@ public class BattleBoard : MonoBehaviour
     private List<List<Enemy>> _rows = new List<List<Enemy>>();
     [SerializeField] private Hero _hero;
     [SerializeField] private GameState _state;
+    [SerializeField] private TextMesh _timerLabel; // shows the time left in the shuffle
     [SerializeField] private float _actionWaitTime = 1f; // how long to wait between actions on turns (should be global but whatevs)
+    private int _enemiesPerWave = 6;
 
     // DEFINED THIS WAY FOR INITIALIZATION SO IT'LL APPEAR IN THE INSPECTOR CUZ I CAN'T BE BOTHERED OTHERWISE
     [SerializeField] private List<GameObject> _row1;
@@ -96,20 +99,43 @@ public class BattleBoard : MonoBehaviour
         switch (_state) {
             case GameState.SHUFFLING: // the player shuffling their cards
                 _shuffleTime -= Time.deltaTime;
-                if (_shuffleTime <= 0)
+				if (_shuffleTime <= 0)
 				{
-                    _shuffleTime = _shuffleTimeMax;
-                    _state = GameState.HEROTURN;
-                    var heroCoroutine = _hero.ExecuteTurn(this);
-                    _hero.StartCoroutine(heroCoroutine);
-                    _hero.Deck.UpdateVisibility(); // to unhighlight cards
+					_shuffleTime = _shuffleTimeMax;
+					_state = GameState.HEROTURN;
+					var heroCoroutine = _hero.ExecuteTurn(this);
+					_hero.StartCoroutine(heroCoroutine);
+					_hero.Deck.UpdateVisibility(); // to unhighlight cards
+                    _timerLabel.text = ""; // hide the timer
 				}
-                break;
+                else
+				{
+                    _timerLabel.text = _shuffleTime.ToString("0.0");
+				}
+				break;
             case GameState.HEROTURN:
                 // nothing needs to be done, since the hero's turn coroutine will be running
                 break;
             case GameState.ENEMYTURN:
                 // this is a pretty shoddy way of doing it, but ~fuck it~
+                // if there are any destroyed enemies among gus, remove them from referencing
+                foreach (List<Enemy> row in _rows)
+				{
+                    var enemiesToRemove = new List<Enemy>();
+                    foreach (Enemy e in row)
+					{
+                        if (e == null)
+						{
+                            enemiesToRemove.Add(e);
+						}
+					}
+                    // only remove enemies *after* all are tracked, otherwise you might skip things
+                    foreach (Enemy e in enemiesToRemove)
+					{
+                        row.Remove(e);
+					}
+				}
+                MoveEnemies(); // move all enemies, in case any were in fact obliterated
                 var enemyCoroutine = RunEnemies();
                 StartCoroutine(enemyCoroutine);
                 _state = GameState.WAITFORENEMIES;
@@ -149,19 +175,27 @@ public class BattleBoard : MonoBehaviour
             }
 		}
 
+        // if all enemies are dead, you win (ideally, spawn new ones and add new cards)
+        var enemyCount = 0;
+        foreach (List<Enemy> row in _rows)
+		{
+            enemyCount += row.Count;
+		}
+        if (enemyCount == 0)
+		{
+            SceneManager.LoadScene("YouWin");
+
+            // pick a random enemy from list and create it
+   //         for (var i = 0; i < _enemiesPerWave; i++)
+			//{
+   //             var spawnRow = rows[Random.Range(0, 4);
+			//}
+		}
+
         // once done, set back to shuffling and reset cursor
         _state = GameState.SHUFFLING;
         _hero.Deck.ResetCursor();
         _hero.ResetDefence(); // set defence back to 0
         _hero.Deck.UpdateVisibility(); // to re-highlight the selected cards
-	}
-
-	private void OnGUI()
-	{
-        // show shuffle timer
-        if (_state == GameState.SHUFFLING)
-		{
-            GUI.Label(new Rect(10, 10, 100, 20), _shuffleTime.ToString("0.0"));
-        }
 	}
 }

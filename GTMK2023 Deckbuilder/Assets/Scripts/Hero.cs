@@ -55,7 +55,9 @@ public class Hero : BattleEntity
     public void ResetDefence()
 	{
         _defence = 0;
-	}
+        UpdateDefenceLabel();
+
+    }
 
     // coroutine: loop through each row, playing one card on each
     public IEnumerator ExecuteTurn(BattleBoard board)

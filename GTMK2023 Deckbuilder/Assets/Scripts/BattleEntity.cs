@@ -33,7 +33,10 @@ public class BattleEntity : MovingEntity
 
     private void UpdateHealthLabel()
 	{
-        _healthLabel.text = _health.ToString() + "/" + _healthMax.ToString();
+        if (_healthLabel != null)
+		{
+            _healthLabel.text = _health.ToString() + "/" + _healthMax.ToString();
+        }
 	}
 
 	public virtual void TakeDamage(int damage)

@@ -19,6 +19,8 @@ public class Deck : MonoBehaviour
     [SerializeField] private float _height = 1.75f;
     [SerializeField] private int _cardsToShow = 8;
 
+    [SerializeField] private AudioSource _sfx; // the sound for shuffling
+
     // how many cards can be selected for shuffling at once
     private int shuffleNum = 3;
 
@@ -174,9 +176,12 @@ public class Deck : MonoBehaviour
         }
         
         // make all selected cards fully visible during shuffling phase
-        foreach (var i in selectIndexes)
+        if (selectIndexes.Count > 0)
 		{
-            _drawPile[i].GetComponent<SpriteRenderer>().color = Color.white;
+            foreach (var i in selectIndexes)
+            {
+                _drawPile[i].GetComponent<SpriteRenderer>().color = Color.white;
+            }
         }
 
         // make all cards in the visible part of the draw pile partially dim (except any selected during shuffling
@@ -202,6 +207,11 @@ public class Deck : MonoBehaviour
         }
     }
 
+    public void Discard(int startIndex)
+	{
+
+	}
+
     public void ResetCursor()
 	{
         _cursorIndex = 0;
@@ -220,14 +230,14 @@ public class Deck : MonoBehaviour
             }
 
             // moving cursor
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
             {
                 _cursorIndex--;
                 PlaceCursorInBounds();
                 print("New cursor index is " + _cursorIndex);
                 UpdateVisibility();
             }
-            if (Input.GetKeyDown(KeyCode.RightArrow))
+            if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
             {
                 _cursorIndex++;
                 PlaceCursorInBounds();
@@ -239,6 +249,13 @@ public class Deck : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 Shuffle(_cursorIndex);
+                _sfx.Play();
+            }
+
+            // discard cards
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Discard(_cursorIndex);
             }
 
             // press E to end the turn immediately

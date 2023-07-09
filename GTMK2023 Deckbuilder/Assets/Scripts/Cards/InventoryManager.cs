@@ -11,13 +11,15 @@ public class InventoryManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // add 2 of every card to the deck
-        for (var i = 0; i < _allCards.Count; i++)
+		// add 2 of every card to the deck
+		for (var i = 0; i < _allCards.Count; i++)
 		{
-            _currentCards.Add(i, 2); 
-        }
+			_currentCards.Add(i, 2);
+		}
 
-        var cardObjs = new List<Card>(); // to store all cards
+		// add some of the weaker cards
+
+		var cardObjs = new List<Card>(); // to store all cards
 
         foreach (KeyValuePair<int, int> entry in _currentCards)
         {
@@ -40,4 +42,9 @@ public class InventoryManager : MonoBehaviour
     {
         
     }
+
+    public void AddNewCards()
+	{
+        // something
+	}
 }

@@ -8,6 +8,7 @@ public class Enemy : BattleEntity
     [SerializeField] private int _waitTurns;
     private int _turnsLeft;
     [SerializeField] private EnemyStrategy _enemyStrat;
+	[SerializeField] private AudioSource _sfx;
 
 	new private void Awake()
 	{
@@ -18,7 +19,10 @@ public class Enemy : BattleEntity
 
 	private void UpdateTurnsLabel()
 	{
-		_turnsLabel.text = "(" + _turnsLeft + ")";
+		if (_turnsLabel != null)
+		{
+			_turnsLabel.text = "(" + _turnsLeft + ")";
+		}
 	}
 
 	// count down; if countdown over, take effect
@@ -28,7 +32,11 @@ public class Enemy : BattleEntity
 		if (_turnsLeft <= 0)
 		{
 			_turnsLeft = _waitTurns;
-			_enemyStrat.Execute(board);
+			if (_sfx != null)
+			{
+				_sfx.Play();
+				_enemyStrat.Execute(board);
+			}
 		}
 		UpdateTurnsLabel();
 	}

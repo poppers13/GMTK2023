@@ -28,7 +28,7 @@ public class BattleBoard : MonoBehaviour
     private float _gridWidth = 1.5f; // in units, how wide each enemy grid square is
     private float _gridHeight = 1.2f; // in units, how tall each enemy grid square is
 
-    private float _shuffleTimeMax = 20.0f; // how long the player can spend shuffling
+    private float _shuffleTimeMax = 30.0f; // how long the player can spend shuffling
     private float _shuffleTime;
 
     // -- PROPERTIES --
@@ -97,8 +97,8 @@ public class BattleBoard : MonoBehaviour
                     _state = GameState.HEROTURN;
                     var heroCoroutine = _hero.ExecuteTurn(this);
                     _hero.StartCoroutine(heroCoroutine);
+                    _hero.Deck.UpdateVisibility(); // to unhighlight cards
 				}
-                // TODO: somewhere in here, draw the timer on-screen
                 break;
             case GameState.HEROTURN:
                 // nothing needs to be done, since the hero's turn coroutine will be running
@@ -144,7 +144,17 @@ public class BattleBoard : MonoBehaviour
             }
 		}
 
-        // once done, set back to shuffling
+        // once done, set back to shuffling and reset cursor
         _state = GameState.SHUFFLING;
+        _hero.Deck.ResetCursor();
+	}
+
+	private void OnGUI()
+	{
+        // show shuffle timer
+        if (_state == GameState.SHUFFLING)
+		{
+            GUI.Label(new Rect(10, 10, 100, 20), _shuffleTime.ToString("0.0"));
+        }
 	}
 }

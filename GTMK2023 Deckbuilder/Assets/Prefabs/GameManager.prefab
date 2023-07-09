@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6282898487295064207}
   - component: {fileID: 6282898487295064240}
+  - component: {fileID: 797460324}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -46,4 +47,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _allCards:
   - {fileID: 6232922341507999250, guid: f5df48f4e8cf33a45b6513f4321c12c2, type: 3}
-  _deck: {fileID: 4159953284864946937, guid: 20036bcc612cd5141aa61d5a16b2f974, type: 3}
+  - {fileID: 6232922341507999250, guid: 2938a0ed23791e8498122fc4c58701ff, type: 3}
+  - {fileID: 6232922341507999250, guid: 89320b7b8c7b84d46aba42f4c9674a2f, type: 3}
+  _deck: {fileID: 0}
+--- !u!114 &797460324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6282898487295064206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e87eccfdefd6ad46845cc06f957e5d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

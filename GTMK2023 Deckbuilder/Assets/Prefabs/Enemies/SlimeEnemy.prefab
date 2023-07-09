@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a68ada544eb07b34c9659ade9043b684, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _textManager: {fileID: 797460324, guid: 3de745109c3ab834f8294a829160d10d, type: 3}
   _health: 25
   _healthMax: 25
   _onDeath:

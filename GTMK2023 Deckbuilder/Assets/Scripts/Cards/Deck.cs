@@ -11,6 +11,7 @@ public class Deck : MonoBehaviour
     private int _cursorIndex = 0;
 
     [SerializeField] private InventoryManager _inv;
+    [SerializeField] private BattleBoard _board;
 
     // values for the size of the deck window, and how many cards there are
     // both these values assume that the deck's origin is in the *bottom-right*
@@ -123,6 +124,9 @@ public class Deck : MonoBehaviour
 		{
             SetCardPos(i);
 		}
+
+        // update visibility of the rest of the cards
+        UpdateVisibility();
 	}
 
     public void ResetDeck()
@@ -148,16 +152,26 @@ public class Deck : MonoBehaviour
 
     public void UpdateVisibility()
 	{
-        var selectIndexes = selectedCards; // retrieve at start, so it's consistent throughout
+        List<int> selectIndexes;
         var maxNum = Mathf.Min(_cardsToShow, _drawPile.Count); // max number of available cards
 
-        // make all selected cards fully visible
+        // if shuffling, highlight selected cards; otherwise, dim everything
+        if (_board.State == GameState.SHUFFLING)
+		{
+            selectIndexes = selectedCards;
+        }
+        else
+		{
+            selectIndexes = new List<int>(); // empty; no selections
+        }
+        
+        // make all selected cards fully visible during shuffling phase
         foreach (var i in selectIndexes)
 		{
             _drawPile[i].GetComponent<SpriteRenderer>().color = Color.white;
         }
 
-        // make all cards in the visible part of the draw pile partially dim
+        // make all cards in the visible part of the draw pile partially dim (except any selected during shuffling
         for (var i = 0; i < maxNum; i++)
         {
             if (selectIndexes.Contains(i))
@@ -180,6 +194,11 @@ public class Deck : MonoBehaviour
         }
     }
 
+    public void ResetCursor()
+	{
+        _cursorIndex = 0;
+	}
+
     // retrieve input for moving/shuffling cards
     void Update()
     {
@@ -189,37 +208,41 @@ public class Deck : MonoBehaviour
             ResetDeck();
 		}
 
-        // moving cursor
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        // only allow for shuffling during the shuffling phase
+        if (_board.State == GameState.SHUFFLING)
 		{
-            _cursorIndex--;
-            PlaceCursorInBounds();
-            print("New cursor index is " + _cursorIndex);
-            UpdateVisibility();
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            _cursorIndex++;
-            PlaceCursorInBounds();
-            print("New cursor index is " + _cursorIndex);
-            UpdateVisibility();
-        }
+            // moving cursor
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                _cursorIndex--;
+                PlaceCursorInBounds();
+                print("New cursor index is " + _cursorIndex);
+                UpdateVisibility();
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                _cursorIndex++;
+                PlaceCursorInBounds();
+                print("New cursor index is " + _cursorIndex);
+                UpdateVisibility();
+            }
 
-        // shuffle cards
-        if (Input.GetKeyDown(KeyCode.Space))
-		{
-            Shuffle(_cursorIndex);
+            // shuffle cards
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Shuffle(_cursorIndex);
+            }
+
+			// TEST: if press P, play the top card
+			if (Input.GetKeyDown(KeyCode.P))
+			{
+				PlayTopCard(new BattleBoard(), 0);
+
+				_cursorIndex--;
+				PlaceCursorInBounds();
+				print("New cursor index is " + _cursorIndex);
+				UpdateVisibility();
+			}
 		}
-
-        // TEST: if press P, play the top card
-        if (Input.GetKeyDown(KeyCode.P))
-		{
-            PlayTopCard(new BattleBoard(), 0);
-
-            _cursorIndex--;
-            PlaceCursorInBounds();
-            print("New cursor index is " + _cursorIndex);
-            UpdateVisibility();
-        }
     }
 }
